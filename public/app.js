@@ -13,8 +13,51 @@
 (() => {
   'use strict';
 
+  /**
+   * Basit enerji-tabanli beat (vurus) algilama.
+   * Bas frekans enerjisini son N karenin ortalamasiyla karsilastirir;
+   * ani bir sicrama olursa "beat" olarak algilar.
+   */
+  class BeatDetector {
+    constructor(analyser, { threshold = 1.4, cooldownMs = 180, historySize = 43 } = {}) {
+      this.analyser = analyser;
+      this.threshold = threshold;
+      this.cooldownMs = cooldownMs;
+      this.historySize = historySize;
+      this.energyHistory = [];
+      this.lastBeatTime = 0;
+      this.data = new Uint8Array(analyser.frequencyBinCount);
+    }
+
+    getBassEnergy() {
+      this.analyser.getByteFrequencyData(this.data);
+      const bassBins = Math.max(4, Math.floor(this.data.length * 0.12)); // yaklasik ilk %12 = bas/kick
+      let sum = 0;
+      for (let i = 0; i < bassBins; i++) sum += this.data[i] * this.data[i];
+      return sum / bassBins;
+    }
+
+    check() {
+      const energy = this.getBassEnergy();
+      this.energyHistory.push(energy);
+      if (this.energyHistory.length > this.historySize) this.energyHistory.shift();
+
+      const avgEnergy = this.energyHistory.reduce((a, b) => a + b, 0) / this.energyHistory.length;
+      const now = Date.now();
+      const cooledDown = now - this.lastBeatTime > this.cooldownMs;
+
+      if (avgEnergy > 4 && energy > avgEnergy * this.threshold && cooledDown) {
+        this.lastBeatTime = now;
+        return true;
+      }
+      return false;
+    }
+  }
+
+
   // ---------- DOM referanslari ----------
   const joinButton = document.getElementById('joinButton');
+  const autoModeToggle = document.getElementById('autoModeToggle');
   const statusText = document.getElementById('statusText');
   const liveInfo = document.getElementById('liveInfo');
   const modeBadge = document.getElementById('modeBadge');
@@ -36,6 +79,9 @@
   let analyser = null;
   let vuRafId = null;
   let activeTimers = [];
+  let beatDetector = null;
+  let localAutoMode = false;
+  let autoRafId = null;
 
   const configuredUrl = (window.TRIDEX_CONFIG && window.TRIDEX_CONFIG.WS_URL) || '';
   const WS_URL = configuredUrl || ((location.protocol === 'https:' ? 'wss://' : 'ws://') + location.host);
@@ -80,6 +126,7 @@
       analyser.fftSize = 512;
       analyser.smoothingTimeConstant = 0.6;
       source.connect(analyser);
+      beatDetector = new BeatDetector(analyser);
       startVuLoop();
       return true;
     } catch (e) {
@@ -214,6 +261,17 @@
     activeTimers.push(timer);
   }
 
+  // Hafif, tek atimlik flas - diger zamanlayicilari etkilemez (ritme gore siklikla cagirilir)
+  function localPulse(durationMs) {
+    const dur = durationMs || 90;
+    applyFlash('white');
+    setTorch(true);
+    setTimeout(() => {
+      applyFlash('black');
+      setTorch(false);
+    }, dur);
+  }
+
   // ---------- Komut yurutucu ----------
   function runCommand(cmd, params) {
     switch (cmd) {
@@ -247,6 +305,11 @@
       case 'COUNTDOWN':
         clearActiveTimers();
         runCountdown(params.seconds || 3);
+        break;
+
+      case 'PULSE':
+        // Timer'lari temizlemiyoruz: ritim modu saniyede birkac kez tetiklenebilir
+        localPulse(params.durationMs || 90);
         break;
 
       case 'STOP':
@@ -315,6 +378,43 @@
   function hideCountdown() {
     countdownOverlay.classList.add('hidden');
   }
+
+  function startLocalAutoLoop() {
+    if (autoRafId) return;
+    function loop() {
+      if (localAutoMode && beatDetector) {
+        if (beatDetector.check()) {
+          localPulse(90);
+        }
+      }
+      autoRafId = requestAnimationFrame(loop);
+    }
+    loop();
+  }
+
+  function stopLocalAutoLoop() {
+    if (autoRafId) {
+      cancelAnimationFrame(autoRafId);
+      autoRafId = null;
+    }
+  }
+
+  autoModeToggle.addEventListener('click', () => {
+    if (!beatDetector) {
+      setStatus('Ritim modu için önce mikrofon izni gerekiyor. Önce gösteriye katıl.');
+      return;
+    }
+    localAutoMode = !localAutoMode;
+    if (localAutoMode) {
+      autoModeToggle.textContent = '🎵 Otomatik Ritim: AÇIK';
+      autoModeToggle.classList.add('active');
+      startLocalAutoLoop();
+    } else {
+      autoModeToggle.textContent = '🎵 Otomatik Ritim: KAPALI';
+      autoModeToggle.classList.remove('active');
+      stopLocalAutoLoop();
+    }
+  });
 
   // ---------- "Gosteriye Katil" butonu ----------
   joinButton.addEventListener('click', async () => {

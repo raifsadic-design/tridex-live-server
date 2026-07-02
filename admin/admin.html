@@ -112,6 +112,26 @@
   </div>
 
   <div class="panel">
+    <p class="subtitle" style="margin-bottom:10px;">🎚 Otomatik Ritim Modu (Operatör Sesi)</p>
+    <p class="subtitle" style="margin-bottom:10px; font-size:12px;">
+      Telefonunu/laptopunu hoparlöre yakın tut ya da sistem sesini paylaş. Müzikteki
+      vuruşları algılayıp tüm cihazlara otomatik senkron flaş komutu gönderir.
+    </p>
+    <div class="row">
+      <button id="startMicAutoBtn">🎤 Mikrofonla Başlat</button>
+      <button id="startSystemAutoBtn" class="secondary">🖥 Sistem Sesiyle Başlat (Chrome)</button>
+      <button id="stopAutoBtn" class="danger" disabled>⏹ Oto-Ritim Durdur</button>
+      <span class="status-line"><span id="beatDot" class="dot"></span><span id="beatText">Pasif</span></span>
+    </div>
+    <div class="row">
+      <label>Hassasiyet: <input type="range" id="sensitivitySlider" min="110" max="200" value="140" /></label>
+      <span id="sensitivityValue">1.40</span>
+      <label>Min. aralık (ms): <input type="number" id="cooldownInput" value="180" min="60" max="600" /></label>
+      <label>Flaş süresi (ms): <input type="number" id="pulseDurationInput" value="90" min="30" max="400" /></label>
+    </div>
+  </div>
+
+  <div class="panel">
     <div class="cmd-grid">
       <button data-cmd="WHITE_ON">⚪ WHITE_ON</button>
       <button data-cmd="BLACK">⚫ BLACK</button>

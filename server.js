@@ -78,7 +78,8 @@ const VALID_COMMANDS = new Set([
   'STROBE',
   'COLOR',
   'COUNTDOWN',
-  'STOP'
+  'STOP',
+  'PULSE' // Ritme gore tek atimlik hizli flas (oto-ritim modu icin)
 ]);
 
 wss.on('connection', (ws) => {
@@ -144,7 +145,9 @@ wss.on('connection', (ws) => {
           executeAt: now + (Number(msg.delayMs) || SYNC_BUFFER_MS)
         };
         broadcastToAudience(payload);
-        broadcastToAdmins({ type: 'commandSent', cmd: msg.cmd, params: payload.params, at: now });
+        if (msg.cmd !== 'PULSE') {
+          broadcastToAdmins({ type: 'commandSent', cmd: msg.cmd, params: payload.params, at: now });
+        }
         break;
       }
 
