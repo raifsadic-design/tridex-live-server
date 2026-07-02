@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0a12" />
+  <title>TRIDEX LIVE</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Tam ekran flas katmani: torch desteklenmeyen cihazlarda burasi yanip soner -->
+  <div id="flashOverlay" class="flash-overlay"></div>
+
+  <!-- Geri sayim rakami -->
+  <div id="countdownOverlay" class="countdown-overlay hidden">
+    <span id="countdownNumber">3</span>
+  </div>
+
+  <!-- Baglanti gizli video (torch icin gerekli kamera akisi, ekranda gorunmez) -->
+  <video id="hiddenCamera" playsinline autoplay muted class="hidden-camera"></video>
+
+  <main id="mainScreen" class="screen">
+    <div class="logo-wrap">
+      <h1 class="logo">TRIDEX<span>LIVE</span></h1>
+      <p class="slogan">QR'ı okut → Tek tuşla katıl → Telefonunu kaldır.</p>
+    </div>
+
+    <div id="statusBox" class="status-box">
+      <p id="statusText">Gösteriye katılmak için aşağıdaki butona bas.</p>
+    </div>
+
+    <button id="joinButton" class="join-button">🎆 Gösteriye Katıl</button>
+
+    <div id="liveInfo" class="live-info hidden">
+      <div class="mode-badge" id="modeBadge">Mod: —</div>
+      <div class="vu-meter">
+        <div id="vuBar" class="vu-bar"></div>
+      </div>
+      <div class="conn-badge">
+        <span id="connDot" class="conn-dot"></span>
+        <span id="connText">Bağlanıyor…</span>
+      </div>
+    </div>
+
+    <p class="footnote">
+      iPhone Safari'de LED flaş web üzerinden desteklenmez; bu cihazlarda otomatik olarak
+      tam ekran flaşa geçilir. Android Chrome'da desteklendiğinde gerçek LED flaş kullanılır.
+    </p>
+  </main>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

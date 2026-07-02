@@ -1,0 +1,211 @@
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  background: #0a0a12;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #f4f4f8;
+}
+
+.screen {
+  position: relative;
+  z-index: 2;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  text-align: center;
+  gap: 24px;
+}
+
+.logo-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.logo {
+  margin: 0;
+  font-size: 42px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  background: linear-gradient(90deg, #7f5af0, #2cb67d, #ff6ac1);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.logo span {
+  display: block;
+  font-size: 20px;
+  letter-spacing: 6px;
+  color: #b8b8c8;
+  -webkit-text-fill-color: #b8b8c8;
+}
+
+.slogan {
+  color: #c7c7d6;
+  font-size: 15px;
+  margin: 0;
+}
+
+.status-box {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  padding: 14px 18px;
+  max-width: 320px;
+}
+
+#statusText {
+  margin: 0;
+  font-size: 14px;
+  color: #d8d8e6;
+}
+
+.join-button {
+  border: none;
+  border-radius: 999px;
+  padding: 18px 36px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #0a0a12;
+  background: linear-gradient(90deg, #7f5af0, #2cb67d);
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(127, 90, 240, 0.4);
+  transition: transform 0.15s ease;
+}
+
+.join-button:active {
+  transform: scale(0.96);
+}
+
+.join-button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.live-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  max-width: 320px;
+}
+
+.mode-badge {
+  font-size: 13px;
+  color: #9c9cb8;
+  letter-spacing: 0.5px;
+}
+
+.vu-meter {
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.vu-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #2cb67d, #ffd166, #ff6ac1);
+  transition: width 0.06s linear;
+}
+
+.conn-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #9c9cb8;
+}
+
+.conn-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #ff5470;
+}
+
+.conn-dot.online {
+  background: #2cb67d;
+}
+
+.footnote {
+  max-width: 340px;
+  font-size: 11px;
+  line-height: 1.5;
+  color: #6b6b80;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.hidden-camera {
+  position: fixed;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Tam ekran flas katmani */
+.flash-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  background: #000;
+  transition: background-color 0.03s linear;
+  pointer-events: none;
+}
+
+.flash-overlay.white {
+  background: #ffffff;
+}
+
+.flash-overlay.black {
+  background: #000000;
+}
+
+.flash-overlay.color {
+  /* JS tarafindan background-color inline set edilir */
+}
+
+/* Geri sayim */
+.countdown-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.85);
+}
+
+#countdownNumber {
+  font-size: 30vw;
+  font-weight: 800;
+  color: #fff;
+  text-shadow: 0 0 40px rgba(127, 90, 240, 0.8);
+}
+
+/* Katilinca ana ekrani sadelestir */
+body.live .screen {
+  gap: 14px;
+}
+
+body.live .footnote {
+  display: none;
+}
