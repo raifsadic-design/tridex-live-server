@@ -1,17 +1,15 @@
 {
-  "name": "tridex-live",
+  "name": "syncaplus-websocket-live",
   "version": "1.0.0",
-  "description": "TRIDEX LIVE - QR ile katilinan, WebSocket ile senkronize edilen konser/stadyum isik gosterisi sistemi",
-  "main": "server.js",
+  "description": "SYNCA+ Stage 6 WebSocket Live Server",
+  "main": "ws-server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js"
+    "start": "node ws-server.js"
   },
   "dependencies": {
-    "express": "^4.19.2",
-    "ws": "^8.17.0"
+    "ws": "^8.18.0"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=18"
   }
 }
